@@ -128,12 +128,25 @@ export const SearchBar = ({ onSearch, onSuggestionSelect }: SearchBarProps) => {
   };
 
   const startQrScanner = async () => {
-    if (!videoRef.current) return;
+    if (!videoRef.current) {
+      console.error('Video element not found');
+      return;
+    }
 
     try {
+      // Check if camera permission is available
+      if (!navigator.mediaDevices?.getUserMedia) {
+        console.error('Camera not supported by this browser');
+        alert('Votre navigateur ne supporte pas l\'accès à la caméra');
+        setIsQrScannerOpen(false);
+        return;
+      }
+
+      console.log('Starting QR scanner...');
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
+          console.log('QR Code detected:', result.data);
           setQuery(result.data);
           onSearch(result.data);
           stopQrScanner();
@@ -141,12 +154,27 @@ export const SearchBar = ({ onSearch, onSuggestionSelect }: SearchBarProps) => {
         {
           highlightScanRegion: true,
           highlightCodeOutline: true,
+          preferredCamera: 'environment', // Use back camera on mobile
         }
       );
 
       await qrScannerRef.current.start();
+      console.log('QR scanner started successfully');
     } catch (error) {
       console.error('Error starting QR scanner:', error);
+      
+      // Handle specific error cases
+      if (error.name === 'NotAllowedError') {
+        alert('Accès à la caméra refusé. Veuillez autoriser l\'accès à la caméra dans les paramètres de votre navigateur.');
+      } else if (error.name === 'NotFoundError') {
+        alert('Aucune caméra trouvée sur cet appareil.');
+      } else if (error.name === 'NotSupportedError') {
+        alert('Le scanner QR n\'est pas supporté sur ce navigateur.');
+      } else {
+        alert('Erreur lors du démarrage du scanner QR: ' + error.message);
+      }
+      
+      setIsQrScannerOpen(false);
     }
   };
 
