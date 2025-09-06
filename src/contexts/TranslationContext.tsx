@@ -1,0 +1,587 @@
+import React, { createContext, useContext, ReactNode } from 'react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+
+type Language = 'fr' | 'ar' | 'en' | 'es';
+
+interface TranslationContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+const TranslationContext = createContext<TranslationContextType | undefined>(undefined);
+
+// Translations object
+const translations = {
+  fr: {
+    // Navigation
+    dashboard: "Tableau de bord",
+    projects: "Projets",
+    reserves: "Réserves",
+    contractors: "Sous-traitants",
+    tasks: "Tâches",
+    planning: "Planning",
+    categories: "Catégories",
+    settings: "Paramètres",
+    receptions: "Réceptions",
+    resolveReserves: "Traitement réserves",
+    compactMode: "Mode compact",
+    
+    // Common
+    title: "Titre",
+    description: "Description",
+    status: "Statut",
+    priority: "Priorité",
+    project: "Projet",
+    assignedTo: "Assigné à",
+    startDate: "Date de début",
+    endDate: "Date de fin",
+    progress: "Progrès",
+    actions: "Actions",
+    search: "Rechercher",
+    filter: "Filtrer",
+    export: "Exporter",
+    print: "Imprimer",
+    download: "Télécharger",
+    save: "Enregistrer",
+    cancel: "Annuler",
+    edit: "Modifier",
+    delete: "Supprimer",
+    add: "Ajouter",
+    create: "Créer",
+    update: "Mettre à jour",
+    close: "Fermer",
+    error: "Erreur",
+    date: "Date",
+    blocks: "Blocs",
+    
+    // Status
+    pending: "En attente",
+    inProgress: "En cours",
+    completed: "Terminé",
+    
+    // Priority
+    urgent: "Urgent",
+    normal: "Normal",
+    low: "Faible",
+    
+    // PV Generation
+    pvGenerated: "PV généré",
+    pvNumber: "Numéro PV",
+    generatedOn: "Généré le",
+    downloadPdf: "Télécharger PDF",
+    qrCode: "Code QR",
+    
+    // Settings
+    theme: "Thème",
+    notifications: "Notifications",
+    language: "Langue",
+    lightTheme: "Clair",
+    darkTheme: "Sombre",
+    systemTheme: "Système",
+    
+    // Messages
+    noTasks: "Aucune tâche trouvée",
+    noProjects: "Aucun projet trouvé",
+    createTask: "Créer une tâche",
+    taskCreated: "Tâche créée avec succès",
+    taskUpdated: "Tâche mise à jour",
+    taskDeleted: "Tâche supprimée",
+    
+    // Reception specific
+    newReception: "Nouvelle Réception",
+    manageReceptions: "Gérez les réceptions et générez automatiquement les PV",
+    createNewReception: "Créer une nouvelle réception",
+    projectRequired: "Veuillez sélectionner un projet",
+    receptionCreated: "Réception créée",
+    withReserves: "Avec réserves",
+    withoutReserves: "Sans réserve",
+    onTime: "Dans les délais",
+    delayed: "Retard",
+    
+    // New translations for export/import/compact/buildings
+    compactModeUpdated: "Mode compact mis à jour",
+    compactModeEnabled: "Mode compact activé",
+    compactModeDisabled: "Mode compact désactivé",
+    dataManagement: "Gestion des Données",
+    exportData: "Exporter les données",
+    importData: "Importer les données",
+    dataExported: "Données exportées",
+    dataImported: "Données importées",
+    dataExportedDescription: "Vos données ont été exportées avec succès",
+    dataImportedDescription: "Vos données ont été importées avec succès",
+    exportDataDescription: "Télécharger une sauvegarde de toutes vos données",
+    importDataDescription: "Restaurer vos données depuis un fichier de sauvegarde",
+    importError: "Erreur d'importation",
+    invalidFileFormat: "Format de fichier invalide",
+    import: "Importer",
+    
+    // Buildings
+    buildingsAndApartments: "Bâtiments et Appartements",
+    manageBuildingsDescription: "Gérez vos bâtiments et appartements",
+    selectProject: "Sélectionner un Projet",
+    selectBlock: "Sélectionner un Bloc",
+    addBlock: "Ajouter un Bloc",
+    editBlock: "Modifier le Bloc",
+    createBlock: "Créer un Bloc",
+    blockCreated: "Bloc créé",
+    blockUpdated: "Bloc mis à jour",
+    blockDeleted: "Bloc supprimé",
+    blockCreatedDescription: "Le bloc a été créé avec succès",
+    blockUpdatedDescription: "Le bloc a été mis à jour avec succès",
+    blockDeletedDescription: "Le bloc et ses appartements ont été supprimés",
+    selectProjectDescription: "Veuillez sélectionner un projet avant de créer un bloc",
+    selectBlockDescription: "Veuillez sélectionner un bloc avant de créer un appartement",
+    apartments: "Appartements",
+    apartment: "Appartement",
+    addApartment: "Ajouter un Appartement",
+    editApartment: "Modifier l'Appartement",
+    createApartment: "Créer un Appartement",
+    apartmentCreated: "Appartement créé",
+    apartmentUpdated: "Appartement mis à jour",
+    apartmentDeleted: "Appartement supprimé",
+    apartmentCreatedDescription: "L'appartement a été créé avec succès",
+    apartmentUpdatedDescription: "L'appartement a été mis à jour avec succès",
+    apartmentDeletedDescription: "L'appartement a été supprimé avec succès",
+    type: "Type",
+    surface: "Surface",
+    block: "Bloc",
+    unknownProject: "Projet inconnu",
+    unknownBlock: "Bloc inconnu",
+    
+    // Compact Dashboard
+    compactDashboard: "Tableau de Bord Compact",
+    quickAccess: "Accès rapide aux fonctionnalités essentielles",
+    quickActions: "Actions Rapides",
+    addReserve: "Ajouter Réserve",
+    addReception: "Ajouter Réception",
+    addTask: "Ajouter Tâche",
+    recentReserves: "Réserves Récentes",
+    recentReceptions: "Réceptions Récentes",
+    urgentTasks: "Tâches Urgentes",
+    deadline: "Échéance",
+    reception: "Réception",
+    validated: "Validée",
+    enableCompactMode: "Activer le mode compact",
+    compactModeDescription: "Interface optimisée pour mobile avec ajout rapide",
+    enableCompactModeInSettings: "Activez le mode compact dans les paramètres pour une interface optimisée",
+    goToSettings: "Aller aux Paramètres",
+    receptionDate: "Date de réception",
+    responsibleParties: "Parties responsables",
+    notSpecified: "Non spécifiées",
+    reservesIdentified: "réserve(s) identifiée(s)",
+    noReceptions: "Aucune réception",
+    createFirstReception: "Commencez par créer votre première réception",
+    optional: "optionnel",
+    required: "requis",
+    allBlocks: "Tous les blocs",
+    allCategories: "Toutes les catégories",
+    selectCategory: "Sélectionner une catégorie",
+    responsiblePartiesPlaceholder: "Séparer par des virgules (ex: Jean Dupont, Marie Martin, ...)",
+    
+    // Notifications translations  
+    notificationTitle: "Notifications",
+    notificationEmpty: "Aucune notification",
+    notificationNew: "Nouveau",
+    notificationMarkAllRead: "Tout marquer comme lu", 
+    notificationClearAll: "Tout effacer",
+    notificationSettings: "Paramètres",
+    notificationSound: "Son des notifications",
+    notificationBrowser: "Notifications navigateur", 
+    notificationAutoDelete: "Suppression automatique",
+    notificationPermissionGranted: "Permission accordée",
+    notificationPermissionGrantedDesc: "Vous recevrez maintenant les notifications du navigateur",
+    notificationTypeInfo: "Information",
+    notificationTypeSuccess: "Succès", 
+    notificationTypeWarning: "Attention",
+    notificationTypeError: "Erreur",
+    notificationTypeReservation: "Réservation",
+    notificationTypeReception: "Réception",
+  },
+  
+  en: {
+    // Navigation
+    dashboard: "Dashboard",
+    projects: "Projects",
+    reserves: "Reserves",
+    contractors: "Contractors",
+    tasks: "Tasks",
+    planning: "Planning",
+    categories: "Categories",
+    settings: "Settings",
+    receptions: "Receptions",
+    resolveReserves: "Resolve Reserves",
+    compactMode: "Compact Mode",
+    
+    // Common
+    title: "Title",
+    description: "Description",
+    status: "Status",
+    priority: "Priority",
+    project: "Project",
+    assignedTo: "Assigned To",
+    startDate: "Start Date",
+    endDate: "End Date",
+    progress: "Progress",
+    actions: "Actions",
+    search: "Search",
+    filter: "Filter",
+    export: "Export",
+    print: "Print",
+    download: "Download",
+    save: "Save",
+    cancel: "Cancel",
+    edit: "Edit",
+    delete: "Delete",
+    add: "Add",
+    create: "Create",
+    update: "Update",
+    close: "Close",
+    
+    // Status
+    pending: "Pending",
+    inProgress: "In Progress",
+    completed: "Completed",
+    
+    // Priority
+    urgent: "Urgent",
+    normal: "Normal",
+    low: "Low",
+    
+    // PV Generation
+    pvGenerated: "PV Generated",
+    pvNumber: "PV Number",
+    generatedOn: "Generated On",
+    downloadPdf: "Download PDF",
+    qrCode: "QR Code",
+    
+    // Settings
+    theme: "Theme",
+    notifications: "Notifications",
+    language: "Language",
+    lightTheme: "Light",
+    darkTheme: "Dark",
+    systemTheme: "System",
+    
+    // Messages
+    noTasks: "No tasks found",
+    noProjects: "No projects found",
+    createTask: "Create Task",
+    taskCreated: "Task created successfully",
+    taskUpdated: "Task updated",
+    taskDeleted: "Task deleted",
+    
+    // Reception specific
+    newReception: "New Reception",
+    manageReceptions: "Manage receptions and automatically generate PVs",
+    createNewReception: "Create new reception",
+    projectRequired: "Please select a project",
+    receptionCreated: "Reception created",
+    withReserves: "With reserves",
+    withoutReserves: "No reserves",
+    onTime: "On time",
+    delayed: "Delayed",
+    receptionDate: "Reception date",
+    responsibleParties: "Responsible parties",
+    notSpecified: "Not specified",
+    reservesIdentified: "reserve(s) identified",
+    noReceptions: "No receptions",
+    createFirstReception: "Start by creating your first reception",
+    optional: "optional",
+    required: "required",
+    allBlocks: "All blocks",
+    allCategories: "All categories",
+    selectProject: "Select project",
+    selectBlock: "Select block",
+    selectCategory: "Select category",
+    responsiblePartiesPlaceholder: "Separate with commas (e.g., John Doe, Mary Smith, ...)",
+    
+    // Notifications translations
+    notificationTitle: "Notifications",
+    notificationEmpty: "No notifications",
+    notificationNew: "New",
+    notificationMarkAllRead: "Mark all as read",
+    notificationClearAll: "Clear all", 
+    notificationSettings: "Settings",
+    notificationSound: "Notification sounds",
+    notificationBrowser: "Browser notifications",
+    notificationAutoDelete: "Auto delete",
+    notificationPermissionGranted: "Permission granted",
+    notificationPermissionGrantedDesc: "You will now receive browser notifications",
+    notificationTypeInfo: "Information",
+    notificationTypeSuccess: "Success",
+    notificationTypeWarning: "Warning", 
+    notificationTypeError: "Error",
+    notificationTypeReservation: "Reservation",
+    notificationTypeReception: "Reception",
+  },
+  
+  ar: {
+    // Navigation
+    dashboard: "لوحة التحكم",
+    projects: "المشاريع",
+    reserves: "الاحتياطيات",
+    contractors: "المقاولون",
+    tasks: "المهام",
+    planning: "التخطيط",
+    categories: "الفئات",
+    settings: "الإعدادات",
+    receptions: "الاستقبالات",
+    resolveReserves: "حل الاحتياطيات",
+    compactMode: "الوضع المدمج",
+    
+    // Common
+    title: "العنوان",
+    description: "الوصف",
+    status: "الحالة",
+    priority: "الأولوية",
+    project: "المشروع",
+    assignedTo: "مُعيَّن إلى",
+    startDate: "تاريخ البداية",
+    endDate: "تاريخ النهاية",
+    progress: "التقدم",
+    actions: "الإجراءات",
+    search: "بحث",
+    filter: "تصفية",
+    export: "تصدير",
+    print: "طباعة",
+    download: "تحميل",
+    save: "حفظ",
+    cancel: "إلغاء",
+    edit: "تحرير",
+    delete: "حذف",
+    add: "إضافة",
+    create: "إنشاء",
+    update: "تحديث",
+    close: "إغلاق",
+    
+    // Status
+    pending: "في الانتظار",
+    inProgress: "قيد التنفيذ",
+    completed: "مكتمل",
+    
+    // Priority
+    urgent: "عاجل",
+    normal: "عادي",
+    low: "منخفض",
+    
+    // PV Generation
+    pvGenerated: "تم إنشاء المحضر",
+    pvNumber: "رقم المحضر",
+    generatedOn: "تم إنشاؤه في",
+    downloadPdf: "تحميل PDF",
+    qrCode: "رمز QR",
+    
+    // Settings
+    theme: "المظهر",
+    notifications: "الإشعارات",
+    language: "اللغة",
+    lightTheme: "فاتح",
+    darkTheme: "داكن",
+    systemTheme: "النظام",
+    
+    // Messages
+    noTasks: "لم يتم العثور على مهام",
+    noProjects: "لم يتم العثور على مشاريع",
+    createTask: "إنشاء مهمة",
+    taskCreated: "تم إنشاء المهمة بنجاح",
+    taskUpdated: "تم تحديث المهمة",
+    taskDeleted: "تم حذف المهمة",
+    
+    // Reception specific
+    newReception: "استقبال جديد",
+    manageReceptions: "إدارة الاستقبالات وإنشاء المحاضر تلقائياً",
+    createNewReception: "إنشاء استقبال جديد",
+    projectRequired: "يرجى اختيار مشروع",
+    receptionCreated: "تم إنشاء الاستقبال",
+    withReserves: "مع الاحتياطيات",
+    withoutReserves: "بدون احتياطيات",
+    onTime: "في الوقت المحدد",
+    delayed: "متأخر",
+    receptionDate: "تاريخ الاستقبال",
+    responsibleParties: "الأطراف المسؤولة",
+    notSpecified: "غير محدد",
+    reservesIdentified: "احتياطي محدد",
+    noReceptions: "لا توجد استقبالات",
+    createFirstReception: "ابدأ بإنشاء أول استقبال لك",
+    optional: "اختياري",
+    required: "مطلوب",
+    allBlocks: "جميع الكتل",
+    allCategories: "جميع الفئات",
+    selectProject: "اختر مشروع",
+    selectBlock: "اختر كتلة",
+    selectCategory: "اختر فئة",
+    responsiblePartiesPlaceholder: "افصل بفواصل (مثل: أحمد علي، فاطمة محمد، ...)",
+    
+    // Notifications translations
+    notificationTitle: "الإشعارات",
+    notificationEmpty: "لا توجد إشعارات",
+    notificationNew: "جديد",
+    notificationMarkAllRead: "تعيين الكل كمقروء",
+    notificationClearAll: "مسح الكل",
+    notificationSettings: "الإعدادات", 
+    notificationSound: "أصوات الإشعارات",
+    notificationBrowser: "إشعارات المتصفح",
+    notificationAutoDelete: "الحذف التلقائي",
+    notificationPermissionGranted: "تم منح الإذن",
+    notificationPermissionGrantedDesc: "ستتلقى الآن إشعارات المتصفح",
+    notificationTypeInfo: "معلومات",
+    notificationTypeSuccess: "نجح",
+    notificationTypeWarning: "تحذير",
+    notificationTypeError: "خطأ", 
+    notificationTypeReservation: "حجز",
+    notificationTypeReception: "استقبال",
+  },
+  
+  es: {
+    // Navigation
+    dashboard: "Panel de Control",
+    projects: "Proyectos",
+    reserves: "Reservas",
+    contractors: "Contratistas",
+    tasks: "Tareas",
+    planning: "Planificación",
+    categories: "Categorías",
+    settings: "Configuración",
+    receptions: "Recepciones",
+    resolveReserves: "Resolver Reservas",
+    compactMode: "Modo Compacto",
+    
+    // Common
+    title: "Título",
+    description: "Descripción",
+    status: "Estado",
+    priority: "Prioridad",
+    project: "Proyecto",
+    assignedTo: "Asignado a",
+    startDate: "Fecha de Inicio",
+    endDate: "Fecha de Fin",
+    progress: "Progreso",
+    actions: "Acciones",
+    search: "Buscar",
+    filter: "Filtrar",
+    export: "Exportar",
+    print: "Imprimir",
+    download: "Descargar",
+    save: "Guardar",
+    cancel: "Cancelar",
+    edit: "Editar",
+    delete: "Eliminar",
+    add: "Agregar",
+    create: "Crear",
+    update: "Actualizar",
+    close: "Cerrar",
+    
+    // Status
+    pending: "Pendiente",
+    inProgress: "En Progreso",
+    completed: "Completado",
+    
+    // Priority
+    urgent: "Urgente",
+    normal: "Normal",
+    low: "Bajo",
+    
+    // PV Generation
+    pvGenerated: "PV Generado",
+    pvNumber: "Número PV",
+    generatedOn: "Generado el",
+    downloadPdf: "Descargar PDF",
+    qrCode: "Código QR",
+    
+    // Settings
+    theme: "Tema",
+    notifications: "Notificaciones",
+    language: "Idioma",
+    lightTheme: "Claro",
+    darkTheme: "Oscuro",
+    systemTheme: "Sistema",
+    
+    // Messages
+    noTasks: "No se encontraron tareas",
+    noProjects: "No se encontraron proyectos",
+    createTask: "Crear Tarea",
+    taskCreated: "Tarea creada exitosamente",
+    taskUpdated: "Tarea actualizada",
+    taskDeleted: "Tarea eliminada",
+    
+    // Reception specific
+    newReception: "Nueva Recepción",
+    manageReceptions: "Gestiona las recepciones y genera automáticamente los PVs",
+    createNewReception: "Crear nueva recepción",
+    projectRequired: "Por favor selecciona un proyecto",
+    receptionCreated: "Recepción creada",
+    withReserves: "Con reservas",
+    withoutReserves: "Sin reservas",
+    onTime: "A tiempo",
+    delayed: "Retrasado",
+    receptionDate: "Fecha de recepción",
+    responsibleParties: "Partes responsables",
+    notSpecified: "No especificado",
+    reservesIdentified: "reserva(s) identificada(s)",
+    noReceptions: "No hay recepciones",
+    createFirstReception: "Comienza creando tu primera recepción",
+    optional: "opcional",
+    required: "requerido",
+    allBlocks: "Todos los bloques",
+    allCategories: "Todas las categorías",
+    selectProject: "Seleccionar proyecto",
+    selectBlock: "Seleccionar bloque",
+    selectCategory: "Seleccionar categoría",
+    responsiblePartiesPlaceholder: "Separar con comas (ej: Juan Pérez, María García, ...)",
+    
+    // Notifications translations
+    notificationTitle: "Notificaciones",
+    notificationEmpty: "Sin notificaciones",
+    notificationNew: "Nuevo",
+    notificationMarkAllRead: "Marcar todo como leído",
+    notificationClearAll: "Limpiar todo",
+    notificationSettings: "Configuración",
+    notificationSound: "Sonidos de notificación",
+    notificationBrowser: "Notificaciones del navegador",
+    notificationAutoDelete: "Eliminar automáticamente",
+    notificationPermissionGranted: "Permiso concedido",
+    notificationPermissionGrantedDesc: "Ahora recibirás notificaciones del navegador",
+    notificationTypeInfo: "Información",
+    notificationTypeSuccess: "Éxito",
+    notificationTypeWarning: "Advertencia",
+    notificationTypeError: "Error",
+    notificationTypeReservation: "Reserva",
+    notificationTypeReception: "Recepción",
+  }
+};
+
+export const TranslationProvider = ({ children }: { children: ReactNode }) => {
+  const [settings, setSettings] = useLocalStorage('settings', {
+    theme: 'light',
+    notifications: true,
+    language: 'fr' as Language
+  });
+
+  const t = (key: string): string => {
+    const langTranslations = translations[settings.language];
+    return langTranslations[key as keyof typeof langTranslations] || key;
+  };
+
+  const setLanguage = (lang: Language) => {
+    setSettings(prev => ({ ...prev, language: lang }));
+  };
+
+  return (
+    <TranslationContext.Provider value={{
+      language: settings.language,
+      setLanguage,
+      t
+    }}>
+      {children}
+    </TranslationContext.Provider>
+  );
+};
+
+export const useTranslation = () => {
+  const context = useContext(TranslationContext);
+  if (context === undefined) {
+    throw new Error('useTranslation must be used within a TranslationProvider');
+  }
+  return context;
+};
