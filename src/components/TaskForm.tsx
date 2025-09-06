@@ -9,23 +9,24 @@ import { Task } from "@/types";
 
 interface TaskFormProps {
   onSubmit: (data: Omit<Task, 'id' | 'createdAt'>) => void;
+  initialData?: Partial<Task>;
 }
 
-export function TaskForm({ onSubmit }: TaskFormProps) {
+export function TaskForm({ onSubmit, initialData }: TaskFormProps) {
   const [projects] = useProjects();
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    projectId: '',
-    assignedTo: '',
-    startDate: '',
-    endDate: '',
-    duration: 1,
-    status: 'en_attente' as Task['status'],
-    priority: 'normal' as Task['priority'],
-    progress: 0,
-    dependencies: [] as string[]
+    title: initialData?.title || '',
+    description: initialData?.description || '',
+    projectId: initialData?.projectId || '',
+    assignedTo: initialData?.assignedTo || '',
+    startDate: initialData?.startDate || '',
+    endDate: initialData?.endDate || '',
+    duration: initialData?.duration || 1,
+    status: (initialData?.status || 'en_attente') as Task['status'],
+    priority: (initialData?.priority || 'normal') as Task['priority'],
+    progress: initialData?.progress || 0,
+    dependencies: initialData?.dependencies || [] as string[]
   });
 
   const handleSubmit = (e: React.FormEvent) => {

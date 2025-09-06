@@ -38,14 +38,14 @@ const Receptions = () => {
   // Filtres dynamiques basés sur les sélections
   const getFilteredContractors = () => {
     if (!selectedCategory || selectedCategory === "all") return contractors;
-    return contractors.filter(c => c.categoryId === selectedCategory);
+    return contractors.filter(c => c.categoryIds.includes(selectedCategory));
   };
 
   const getFilteredCategories = () => {
     if (!selectedContractor || selectedContractor === "all") return categories;
     const contractor = contractors.find(c => c.id === selectedContractor);
-    if (!contractor?.categoryId) return categories;
-    return categories.filter(c => c.id === contractor.categoryId);
+    if (!contractor?.categoryIds.length) return categories;
+    return categories.filter(c => contractor.categoryIds.includes(c.id));
   };
 
   const getFilteredBlocks = () => {
@@ -59,7 +59,7 @@ const Receptions = () => {
     // Reset contractor if it doesn't match the new category
     if (selectedContractor && selectedContractor !== "all") {
       const contractor = contractors.find(c => c.id === selectedContractor);
-      if (contractor && contractor.categoryId !== categoryId) {
+      if (contractor && !contractor.categoryIds.includes(categoryId)) {
         setSelectedContractor("all");
       }
     }
@@ -69,8 +69,8 @@ const Receptions = () => {
     setSelectedContractor(contractorId);
     // Auto-select category if contractor has one
     const contractor = contractors.find(c => c.id === contractorId);
-    if (contractor?.categoryId) {
-      setSelectedCategory(contractor.categoryId);
+    if (contractor?.categoryIds.length > 0) {
+      setSelectedCategory(contractor.categoryIds[0]);
     }
   };
 
