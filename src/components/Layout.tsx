@@ -4,12 +4,14 @@ import { TopBar } from "@/components/TopBar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
+  const { t } = useTranslation();
   const [isCompactMode, setIsCompactMode] = useLocalStorage("compactMode", false);
 
   const handleSearch = (query: string) => {
@@ -26,7 +28,7 @@ export function Layout({ children }: LayoutProps) {
             <SidebarTrigger />
             <div className="flex-1 flex items-center justify-between">
               <div className="flex items-center gap-4 flex-1">
-                <h1 className="text-lg font-semibold">Gestion de Projets Construction</h1>
+                <h1 className="text-lg font-semibold">{t('appTitle')}</h1>
                 <SearchBar onSearch={handleSearch} />
               </div>
               <TopBar

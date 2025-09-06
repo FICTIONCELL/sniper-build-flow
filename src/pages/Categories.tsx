@@ -7,8 +7,10 @@ import { Category } from "@/types";
 import { Plus, Tags, Palette } from "lucide-react";
 import { CategoryForm } from "@/components/CategoryForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const Categories = () => {
+  const { t } = useTranslation();
   const [categories, setCategories] = useCategories();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -39,19 +41,19 @@ const Categories = () => {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Catégories</h1>
-          <p className="text-muted-foreground">Gérez les catégories pour organiser vos réserves</p>
+          <h1 className="text-3xl font-bold">{t('categories')}</h1>
+          <p className="text-muted-foreground">{t('manageCategories')}</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Nouvelle Catégorie
+              {t('newCategory')}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Créer une nouvelle catégorie</DialogTitle>
+              <DialogTitle>{t('createNewCategory')}</DialogTitle>
             </DialogHeader>
             <CategoryForm onSubmit={handleCreateCategory} />
           </DialogContent>
@@ -62,18 +64,18 @@ const Categories = () => {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Tags className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Aucune catégorie</h3>
-            <p className="text-muted-foreground mb-4">Commencez par créer votre première catégorie</p>
+            <h3 className="text-lg font-semibold mb-2">{t('noCategories')}</h3>
+            <p className="text-muted-foreground mb-4">{t('createFirstCategory')}</p>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
                   <Plus className="mr-2 h-4 w-4" />
-                  Créer une catégorie
+                  {t('createCategory')}
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
                 <DialogHeader>
-                  <DialogTitle>Créer une nouvelle catégorie</DialogTitle>
+                  <DialogTitle>{t('createNewCategory')}</DialogTitle>
                 </DialogHeader>
                 <CategoryForm onSubmit={handleCreateCategory} />
               </DialogContent>
@@ -103,12 +105,12 @@ const Categories = () => {
                   <div className="flex items-center gap-2">
                     <Palette className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">
-                      Couleur: {category.color ? category.color.toUpperCase() : 'Non définie'}
+                      {t('color')}: {category.color ? category.color.toUpperCase() : t('notDefined')}
                     </span>
                   </div>
                   
                   <div className="text-xs text-muted-foreground">
-                    Créée le {new Date(category.createdAt).toLocaleDateString()}
+                    {t('createdOn')} {new Date(category.createdAt).toLocaleDateString()}
                   </div>
                 </div>
               </CardContent>
@@ -120,9 +122,9 @@ const Categories = () => {
       {categories.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Aperçu des catégories</CardTitle>
+            <CardTitle>{t('categoryOverview')}</CardTitle>
             <CardDescription>
-              Toutes vos catégories avec leurs couleurs associées
+              {t('allCategoriesWithColors')}
             </CardDescription>
           </CardHeader>
           <CardContent>

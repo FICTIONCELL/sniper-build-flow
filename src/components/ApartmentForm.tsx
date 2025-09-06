@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Apartment } from "@/types";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 interface ApartmentFormProps {
   onSubmit: (data: Omit<Apartment, 'id' | 'projectId' | 'blockId' | 'createdAt'>) => void;
@@ -12,6 +13,7 @@ interface ApartmentFormProps {
 }
 
 export function ApartmentForm({ onSubmit, initialData, isEditing = false }: ApartmentFormProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     number: initialData?.number || '',
     type: initialData?.type || 'appartement' as Apartment['type'],
@@ -27,18 +29,18 @@ export function ApartmentForm({ onSubmit, initialData, isEditing = false }: Apar
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="number">Numéro</Label>
+        <Label htmlFor="number">{t('number')}</Label>
         <Input
           id="number"
           value={formData.number}
           onChange={(e) => setFormData(prev => ({ ...prev, number: e.target.value }))}
-          placeholder="Ex: A101, B205..."
+          placeholder={`${t('example')} ${t('numberPlaceholder')}`}
           required
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="type">Type</Label>
+        <Label htmlFor="type">{t('type')}</Label>
         <Select value={formData.type} onValueChange={(value: Apartment['type']) => 
           setFormData(prev => ({ ...prev, type: value }))
         }>
@@ -46,16 +48,16 @@ export function ApartmentForm({ onSubmit, initialData, isEditing = false }: Apar
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="appartement">Appartement</SelectItem>
-            <SelectItem value="villa">Villa</SelectItem>
-            <SelectItem value="studio">Studio</SelectItem>
-            <SelectItem value="duplex">Duplex</SelectItem>
+            <SelectItem value="appartement">{t('appartement')}</SelectItem>
+            <SelectItem value="villa">{t('villa')}</SelectItem>
+            <SelectItem value="studio">{t('studio')}</SelectItem>
+            <SelectItem value="duplex">{t('duplex')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="surface">Surface (m²)</Label>
+        <Label htmlFor="surface">{t('surfaceUnit')}</Label>
         <Input
           id="surface"
           type="number"
@@ -63,13 +65,13 @@ export function ApartmentForm({ onSubmit, initialData, isEditing = false }: Apar
           step="0.01"
           value={formData.surface}
           onChange={(e) => setFormData(prev => ({ ...prev, surface: parseFloat(e.target.value) || 0 }))}
-          placeholder="Ex: 85.5"
+          placeholder={`${t('example')} ${t('surfacePlaceholder')}`}
           required
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="status">Statut</Label>
+        <Label htmlFor="status">{t('status')}</Label>
         <Select value={formData.status} onValueChange={(value: Apartment['status']) => 
           setFormData(prev => ({ ...prev, status: value }))
         }>
@@ -77,15 +79,15 @@ export function ApartmentForm({ onSubmit, initialData, isEditing = false }: Apar
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="libre">Libre</SelectItem>
-            <SelectItem value="reserve">Réservé</SelectItem>
-            <SelectItem value="vendu">Vendu</SelectItem>
+            <SelectItem value="libre">{t('libre')}</SelectItem>
+            <SelectItem value="reserve">{t('reserve')}</SelectItem>
+            <SelectItem value="vendu">{t('vendu')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <Button type="submit" className="w-full">
-        {isEditing ? 'Modifier' : 'Créer'} l'appartement
+        {isEditing ? t('edit') : t('create')} {t('apartmentEntity')}
       </Button>
     </form>
   );
